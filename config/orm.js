@@ -8,23 +8,36 @@ var orm = {
       cb(result);
     });
   },
-  insertOne: function(tableInput, column, value, cb) {
-    var queryString = "INSERT INTO ?? (??) VALUES (?)";
-    connection.query(queryString, [tableInput, column, value], function(err, result) {
-      if (err) throw err;
+  insertOne: function(table, cols, vals, cb) {
+    var queryString = "INSERT INTO " + table;
+
+    queryString += " (";
+    queryString += cols.toString();
+    queryString += ") ";
+    queryString += "VALUES (";
+    queryString += printQuestionMarks(vals.length);
+    queryString += ") ";
+
+    console.log(queryString);
+
+    connection.query(queryString, vals, function(err, result) {
+      if (err) {
+        throw err;
+      }
+
       cb(result);
     });
   },
   updateOne: function(tableInput, toThis, fromThis, cb) {
-    var queryString = `UPDATE ${tableInput} SET ${toThis} WHERE ${fromThis}`;
-    connection.query(queryString, [tableInput, toThis, fromThis], function(err, result) {
+    var queryString = `UPDATE ${tableInput} SET devoured = TRUE WHERE ${fromThis}`;
+    connection.query(queryString, function(err, result) {
       if (err) throw err;
       cb(result);
     });
   },
   deleteOne: function(tableInput, toDelete, cb) {
     var queryString = `DELETE FROM ?? WHERE ${toDelete}`;
-    connection.query(queryString, [tableInput, colToSearch, valOfCol], function(err, result) {
+    connection.query(queryString, [tableInput], function(err, result) {
       if (err) throw err;
       cb(result);
     });
